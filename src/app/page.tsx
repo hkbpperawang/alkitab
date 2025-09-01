@@ -1,3 +1,4 @@
+// src/app/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -12,7 +13,7 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Moon, Sun, BookOpen, Languages } from "lucide-react";
+import { Moon, Sun, BookOpen, Languages, AlertCircle, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 interface Book {
@@ -43,21 +44,50 @@ export default function Home() {
   const [selectedVerse, setSelectedVerse] = useState<string>("");
   const [verses, setVerses] = useState<Verse[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch books list
+  // Fetch books list dengan error handling yang lebih baik
   useEffect(() => {
     const fetchBooks = async () => {
       try {
         setLoading(true);
+        setError(null);
+        
+        console.log("Fetching books for version:", selectedVersion);
+        
         const response = await fetch(
-          `https://alkitab-api-v3.vercel.app/books/${selectedVersion}`
+          `https://alkitab-api-v3.vercel.app/books/${selectedVersion}`,
+          {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }
         );
-        if (!response.ok) throw new Error("Gagal mengambil data kitab");
+        
+        console.log("Response status:", response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Response error:", errorText);
+          throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+        
         const data = await response.json();
+        console.log("Books data:", data);
+        
+        if (!Array.isArray(data)) {
+          throw new Error("Invalid data format received");
+        }
+        
         setBooks(data);
+        toast.success("Data kitab berhasil dimuat");
       } catch (error) {
-        toast.error("Gagal mengambil data kitab");
         console.error("Error fetching books:", error);
+        const errorMessage = error instanceof Error ? error.message : "Gagal mengambil data kitab";
+        setError(errorMessage);
+        toast.error(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -66,22 +96,50 @@ export default function Home() {
     fetchBooks();
   }, [selectedVersion]);
 
-  // Fetch verses when book and chapter are selected
+  // Fetch verses dengan error handling yang lebih baik
   useEffect(() => {
     const fetchVerses = async () => {
       if (!selectedBook || !selectedChapter) return;
 
       try {
         setLoading(true);
+        setError(null);
+        
+        console.log("Fetching verses:", { selectedVersion, selectedBook, selectedChapter });
+        
         const response = await fetch(
-          `https://alkitab-api-v3.vercel.app/${selectedVersion}/${selectedBook}/${selectedChapter}`
+          `https://alkitab-api-v3.vercel.app/${selectedVersion}/${selectedBook}/${selectedChapter}`,
+          {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          }
         );
-        if (!response.ok) throw new Error("Gagal mengambil data ayat");
+        
+        console.log("Verses response status:", response.status);
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Verses response error:", errorText);
+          throw new Error(`HTTP ${response.status}: ${errorText}`);
+        }
+        
         const data = await response.json();
-        setVerses(data.verses || []);
+        console.log("Verses data:", data);
+        
+        if (!data.verses || !Array.isArray(data.verses)) {
+          throw new Error("Invalid verses data format");
+        }
+        
+        setVerses(data.verses);
+        toast.success("Data ayat berhasil dimuat");
       } catch (error) {
-        toast.error("Gagal mengambil data ayat");
         console.error("Error fetching verses:", error);
+        const errorMessage = error instanceof Error ? error.message : "Gagal mengambil data ayat";
+        setError(errorMessage);
+        toast.error(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -95,6 +153,21 @@ export default function Home() {
     ? Array.from({ length: selectedBookData.chapters }, (_, i) => i + 1)
     : [];
   const verseNumbers = verses.map((verse) => verse.verse);
+
+  const retryFetch = () => {
+    setSelectedVersion(selectedVersion);
+    if (selectedBook && selectedChapter) {
+      // Trigger refetch
+      const tempBook = selectedBook;
+      const tempChapter = selectedChapter;
+      setSelectedBook("");
+      setSelectedChapter("");
+      setTimeout(() => {
+        setSelectedBook(tempBook);
+        setSelectedChapter(tempChapter);
+      }, 100);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -123,6 +196,7 @@ export default function Home() {
                     setSelectedChapter("");
                     setSelectedVerse("");
                     setVerses([]);
+                    setError(null);
                   }}
                 >
                   <SelectTrigger className="w-48">
@@ -152,6 +226,29 @@ export default function Home() {
         </div>
       </header>
 
+      {/* Error Display */}
+      {error && (
+        <div className="container mx-auto px-4 py-4">
+          <Card className="border-destructive">
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-2 text-destructive">
+                <AlertCircle className="h-4 w-4" />
+                <span className="font-medium">Error: {error}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={retryFetch}
+                  className="ml-auto"
+                >
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Coba Lagi
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-4">
@@ -162,6 +259,14 @@ export default function Home() {
                 <CardTitle>Pilih Ayat</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Debug Info */}
+                <div className="text-xs text-muted-foreground bg-muted p-2 rounded">
+                  <div>Books loaded: {books.length}</div>
+                  <div>Selected: {selectedBook || 'None'}</div>
+                  <div>Chapter: {selectedChapter || 'None'}</div>
+                  <div>Verses: {verses.length}</div>
+                </div>
+
                 {/* Book Selection */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Kitab</label>
@@ -172,11 +277,12 @@ export default function Home() {
                       setSelectedChapter("");
                       setSelectedVerse("");
                       setVerses([]);
+                      setError(null);
                     }}
                     disabled={loading || books.length === 0}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Pilih kitab" />
+                      <SelectValue placeholder={books.length === 0 ? "Memuat kitab..." : "Pilih kitab"} />
                     </SelectTrigger>
                     <SelectContent>
                       <ScrollArea className="max-h-60">
@@ -198,6 +304,7 @@ export default function Home() {
                     onValueChange={(value) => {
                       setSelectedChapter(value);
                       setSelectedVerse("");
+                      setError(null);
                     }}
                     disabled={loading || !selectedBook}
                   >
@@ -297,7 +404,17 @@ export default function Home() {
                     <div className="flex items-center justify-center h-96">
                       <div className="text-center text-muted-foreground">
                         <BookOpen className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                        <p>Silakan pilih kitab, pasal, dan ayat untuk membaca Alkitab</p>
+                        <p className="mb-4">Silakan pilih kitab, pasal, dan ayat untuk membaca Alkitab</p>
+                        {error && (
+                          <Button
+                            variant="outline"
+                            onClick={retryFetch}
+                            className="mt-4"
+                          >
+                            <RefreshCw className="h-4 w-4 mr-2" />
+                            Coba Muat Ulang
+                          </Button>
+                        )}
                       </div>
                     </div>
                   )}
