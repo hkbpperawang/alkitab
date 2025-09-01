@@ -49,7 +49,9 @@ export default function Home() {
     const fetchBooks = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/bible/books/${selectedVersion}`);
+        const response = await fetch(
+          `https://alkitab-api-v3.vercel.app/books/${selectedVersion}`
+        );
         if (!response.ok) throw new Error("Gagal mengambil data kitab");
         const data = await response.json();
         setBooks(data);
@@ -72,7 +74,7 @@ export default function Home() {
       try {
         setLoading(true);
         const response = await fetch(
-          `/api/bible/${selectedVersion}/${selectedBook}/${selectedChapter}`
+          `https://alkitab-api-v3.vercel.app/${selectedVersion}/${selectedBook}/${selectedChapter}`
         );
         if (!response.ok) throw new Error("Gagal mengambil data ayat");
         const data = await response.json();
