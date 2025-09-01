@@ -1,4 +1,4 @@
-// src/app/page.tsx - Versi dengan data statis
+// src/app/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -31,7 +31,7 @@ const STATIC_BOOKS = [
   { id: 48, name: "Galatia", abbreviation: "Gal", chapters: 6 },
   { id: 49, name: "Efesus", abbreviation: "Ef", chapters: 6 },
   { id: 50, name: "Filipi", abbreviation: "Flp", chapters: 4 },
-  { id: 57, name "Filemon", abbreviation: "Flm", chapters: 1 },
+  { id: 57, name: "Filemon", abbreviation: "Flm", chapters: 1 },
   { id: 65, name: "Wahyu", abbreviation: "Why", chapters: 22 },
 ];
 
@@ -112,7 +112,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header - sama seperti sebelumnya */}
+      {/* Header */}
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -164,7 +164,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content - sama seperti sebelumnya */}
+      {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
         <div className="grid gap-6 lg:grid-cols-4">
           {/* Controls */}
