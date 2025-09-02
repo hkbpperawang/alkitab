@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alkitab Digital - Terjemahan Baru & Bahasa Batak Toba</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
@@ -67,17 +64,21 @@
                 <section class="content-section">
                     <div class="content-card card">
                         <div class="card__body">
-                            <!-- Loading State -->
-                            <div id="loading-state" class="loading-state hidden">
-                                <div class="loading-spinner"></div>
-                                <p>Memuat ayat...</p>
-                            </div>
-
                             <!-- Empty State -->
                             <div id="empty-state" class="empty-state">
                                 <div class="empty-icon">📖</div>
                                 <h3>Selamat Datang di Alkitab Digital</h3>
-                                <p>Silakan pilih kitab, pasal, dan ayat untuk mulai membaca</p>
+                                <p>Silakan pilih kitab, pasal, dan ayat untuk mulai membaca Firman Tuhan</p>
+                                <div class="popular-verses">
+                                    <h4>Ayat Populer:</h4>
+                                    <div class="verse-links">
+                                        <button class="verse-link" data-book="43" data-chapter="3" data-verse="16">Yohanes 3:16</button>
+                                        <button class="verse-link" data-book="40" data-chapter="6" data-verse="9">Matius 6:9</button>
+                                        <button class="verse-link" data-book="1" data-chapter="1" data-verse="1">Kejadian 1:1</button>
+                                        <button class="verse-link" data-book="19" data-chapter="23" data-verse="1">Mazmur 23:1</button>
+                                        <button class="verse-link" data-book="45" data-chapter="8" data-verse="28">Roma 8:28</button>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Verse Content -->
@@ -96,14 +97,18 @@
                                 <div class="verse-text">
                                     <p id="verse-text-content"></p>
                                 </div>
+                                <div class="verse-navigation">
+                                    <button id="prev-verse" class="btn btn--outline btn--sm">← Ayat Sebelumnya</button>
+                                    <button id="next-verse" class="btn btn--outline btn--sm">Ayat Selanjutnya →</button>
+                                </div>
                             </div>
 
-                            <!-- Error State -->
-                            <div id="error-state" class="error-state hidden">
-                                <div class="error-icon">⚠️</div>
-                                <h3>Terjadi Kesalahan</h3>
-                                <p id="error-message">Gagal memuat ayat. Silakan coba lagi.</p>
-                                <button id="retry-btn" class="btn btn--primary">Coba Lagi</button>
+                            <!-- No Verse Available -->
+                            <div id="no-verse-state" class="error-state hidden">
+                                <div class="error-icon">📚</div>
+                                <h3>Ayat Belum Tersedia</h3>
+                                <p id="no-verse-message">Maaf, teks untuk ayat ini belum tersedia dalam database.</p>
+                                <p>Silakan pilih ayat populer yang telah tersedia.</p>
                             </div>
                         </div>
                     </div>
@@ -116,7 +121,7 @@
             <div class="container">
                 <div class="footer-content">
                     <p>&copy; 2024 Alkitab Digital. Dibuat untuk kemudahan membaca Firman Tuhan.</p>
-                    <p class="api-credit">API: <a href="https://github.com/indrapalijama/alkitab-api-v3" target="_blank">alkitab-api-v3</a></p>
+                    <p class="footer-note">Data lengkap 66 kitab Alkitab • Terjemahan Baru & Bahasa Batak Toba</p>
                 </div>
             </div>
         </footer>

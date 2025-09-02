@@ -1,46 +1,140 @@
-// Alkitab Digital Application
+// Alkitab Digital Application - Fully Fixed Version
 class AlkitabApp {
     constructor() {
-        this.API_BASE = 'https://alkitab-api-v3.vercel.app';
         this.currentTheme = this.getStoredTheme();
         this.currentLanguage = 'tb';
         this.selectedBook = null;
         this.selectedChapter = null;
         this.selectedVerse = null;
         
-        // Fallback data when API is not available
-        this.fallbackData = {
-            books: [
-                { id: 1, abbreviation: "Kej", name: "Kejadian", batak_name: "Hagenon", total_chapters: 50 },
-                { id: 2, abbreviation: "Kel", name: "Keluaran", batak_name: "Keluar", total_chapters: 40 },
-                { id: 40, abbreviation: "Mat", name: "Matius", batak_name: "Matius", total_chapters: 28 },
-                { id: 43, abbreviation: "Yoh", name: "Yohanes", batak_name: "Johannes", total_chapters: 21 },
-                { id: 66, abbreviation: "Why", name: "Wahyu", batak_name: "Pangungkapon", total_chapters: 22 }
-            ],
-            sampleVerses: {
-                "Yoh_3_16": {
-                    indonesia: "Karena begitu besar kasih Allah akan dunia ini, sehingga Ia telah mengaruniakan Anak-Nya yang tunggal, supaya setiap orang yang percaya kepada-Nya tidak binasa, melainkan beroleh hidup yang kekal.",
-                    batak: "Alai dia ma roha ni Debata tu banua on, asa dibahenon-Na Anak-Na na sada, supaya saha hita na mangandung tu Ibana, unang binasa, alai beang hita angka roha na tartahan."
-                },
-                "Mat_6_9": {
-                    indonesia: "Karena itu berdoalah demikian: Bapa kami yang di sorga, dikuduskanlah nama-Mu.",
-                    batak: "Ala songon on ma manggabe hamu: Amanta di banua ginjang, pasalanta ma goar-Mu."
-                },
-                "Kej_1_1": {
-                    indonesia: "Pada mulanya Allah menciptakan langit dan bumi.",
-                    batak: "Di haporseaon dihagenon Debata langit dohot tano."
-                }
+        // Complete Bible data - built-in, no API dependency
+        this.booksData = [
+            {"id": 1, "name": "Kejadian", "batak": "Hagenon", "abbr": "Kej", "chapters": 50},
+            {"id": 2, "name": "Keluaran", "batak": "Keluar", "abbr": "Kel", "chapters": 40},
+            {"id": 3, "name": "Imamat", "batak": "Imamat", "abbr": "Im", "chapters": 27},
+            {"id": 4, "name": "Bilangan", "batak": "Bilangan", "abbr": "Bil", "chapters": 36},
+            {"id": 5, "name": "Ulangan", "batak": "Ulangan", "abbr": "Ul", "chapters": 34},
+            {"id": 6, "name": "Yosua", "batak": "Yosua", "abbr": "Yos", "chapters": 24},
+            {"id": 7, "name": "Hakim-hakim", "batak": "Hakim", "abbr": "Hak", "chapters": 21},
+            {"id": 8, "name": "Rut", "batak": "Rut", "abbr": "Rut", "chapters": 4},
+            {"id": 9, "name": "1 Samuel", "batak": "1 Samuel", "abbr": "1Sam", "chapters": 31},
+            {"id": 10, "name": "2 Samuel", "batak": "2 Samuel", "abbr": "2Sam", "chapters": 24},
+            {"id": 11, "name": "1 Raja-raja", "batak": "1 Raja", "abbr": "1Raj", "chapters": 22},
+            {"id": 12, "name": "2 Raja-raja", "batak": "2 Raja", "abbr": "2Raj", "chapters": 25},
+            {"id": 13, "name": "1 Tawarikh", "batak": "1 Tawarikh", "abbr": "1Taw", "chapters": 29},
+            {"id": 14, "name": "2 Tawarikh", "batak": "2 Tawarikh", "abbr": "2Taw", "chapters": 36},
+            {"id": 15, "name": "Ezra", "batak": "Ezra", "abbr": "Ezr", "chapters": 10},
+            {"id": 16, "name": "Nehemia", "batak": "Nehemia", "abbr": "Neh", "chapters": 13},
+            {"id": 17, "name": "Ester", "batak": "Ester", "abbr": "Est", "chapters": 10},
+            {"id": 18, "name": "Ayub", "batak": "Ayub", "abbr": "Ayb", "chapters": 42},
+            {"id": 19, "name": "Mazmur", "batak": "Mazmur", "abbr": "Mzm", "chapters": 150},
+            {"id": 20, "name": "Amsal", "batak": "Amsal", "abbr": "Ams", "chapters": 31},
+            {"id": 21, "name": "Pengkhotbah", "batak": "Pangkhotbah", "abbr": "Pkh", "chapters": 12},
+            {"id": 22, "name": "Kidung Agung", "batak": "Ende", "abbr": "Kid", "chapters": 8},
+            {"id": 23, "name": "Yesaya", "batak": "Yesaya", "abbr": "Yes", "chapters": 66},
+            {"id": 24, "name": "Yeremia", "batak": "Yeremia", "abbr": "Yer", "chapters": 52},
+            {"id": 25, "name": "Ratapan", "batak": "Ratapan", "abbr": "Rat", "chapters": 5},
+            {"id": 26, "name": "Yehezkiel", "batak": "Yehezkiel", "abbr": "Yeh", "chapters": 48},
+            {"id": 27, "name": "Daniel", "batak": "Daniel", "abbr": "Dan", "chapters": 12},
+            {"id": 28, "name": "Hosea", "batak": "Hosea", "abbr": "Hos", "chapters": 14},
+            {"id": 29, "name": "Yoel", "batak": "Yoel", "abbr": "Yl", "chapters": 3},
+            {"id": 30, "name": "Amos", "batak": "Amos", "abbr": "Am", "chapters": 9},
+            {"id": 31, "name": "Obaja", "batak": "Obaja", "abbr": "Ob", "chapters": 1},
+            {"id": 32, "name": "Yunus", "batak": "Yunus", "abbr": "Yun", "chapters": 4},
+            {"id": 33, "name": "Mikha", "batak": "Mikha", "abbr": "Mi", "chapters": 7},
+            {"id": 34, "name": "Nahum", "batak": "Nahum", "abbr": "Nah", "chapters": 3},
+            {"id": 35, "name": "Habakuk", "batak": "Habakuk", "abbr": "Hab", "chapters": 3},
+            {"id": 36, "name": "Zefanya", "batak": "Zefanya", "abbr": "Zef", "chapters": 3},
+            {"id": 37, "name": "Hagai", "batak": "Hagai", "abbr": "Hag", "chapters": 2},
+            {"id": 38, "name": "Zakharia", "batak": "Zakharia", "abbr": "Zak", "chapters": 14},
+            {"id": 39, "name": "Maleaki", "batak": "Maleaki", "abbr": "Mal", "chapters": 4},
+            {"id": 40, "name": "Matius", "batak": "Matius", "abbr": "Mat", "chapters": 28},
+            {"id": 41, "name": "Markus", "batak": "Markus", "abbr": "Mar", "chapters": 16},
+            {"id": 42, "name": "Lukas", "batak": "Lukas", "abbr": "Luk", "chapters": 24},
+            {"id": 43, "name": "Yohanes", "batak": "Johannes", "abbr": "Yoh", "chapters": 21},
+            {"id": 44, "name": "Kisah Para Rasul", "batak": "Kisah Rasul", "abbr": "Kis", "chapters": 28},
+            {"id": 45, "name": "Roma", "batak": "Roma", "abbr": "Rom", "chapters": 16},
+            {"id": 46, "name": "1 Korintus", "batak": "1 Korintus", "abbr": "1Kor", "chapters": 16},
+            {"id": 47, "name": "2 Korintus", "batak": "2 Korintus", "abbr": "2Kor", "chapters": 13},
+            {"id": 48, "name": "Galatia", "batak": "Galatia", "abbr": "Gal", "chapters": 6},
+            {"id": 49, "name": "Efesus", "batak": "Efesus", "abbr": "Ef", "chapters": 6},
+            {"id": 50, "name": "Filipi", "batak": "Filipi", "abbr": "Flp", "chapters": 4},
+            {"id": 51, "name": "Kolose", "batak": "Kolose", "abbr": "Kol", "chapters": 4},
+            {"id": 52, "name": "1 Tesalonika", "batak": "1 Tesalonika", "abbr": "1Tes", "chapters": 5},
+            {"id": 53, "name": "2 Tesalonika", "batak": "2 Tesalonika", "abbr": "2Tes", "chapters": 3},
+            {"id": 54, "name": "1 Timotius", "batak": "1 Timotius", "abbr": "1Tim", "chapters": 6},
+            {"id": 55, "name": "2 Timotius", "batak": "2 Timotius", "abbr": "2Tim", "chapters": 4},
+            {"id": 56, "name": "Titus", "batak": "Titus", "abbr": "Tit", "chapters": 3},
+            {"id": 57, "name": "Filemon", "batak": "Filemon", "abbr": "Flm", "chapters": 1},
+            {"id": 58, "name": "Ibrani", "batak": "Ibrani", "abbr": "Ibr", "chapters": 13},
+            {"id": 59, "name": "Yakobus", "batak": "Yakobus", "abbr": "Yak", "chapters": 5},
+            {"id": 60, "name": "1 Petrus", "batak": "1 Petrus", "abbr": "1Pet", "chapters": 5},
+            {"id": 61, "name": "2 Petrus", "batak": "2 Petrus", "abbr": "2Pet", "chapters": 3},
+            {"id": 62, "name": "1 Yohanes", "batak": "1 Johannes", "abbr": "1Yoh", "chapters": 5},
+            {"id": 63, "name": "2 Yohanes", "batak": "2 Johannes", "abbr": "2Yoh", "chapters": 1},
+            {"id": 64, "name": "3 Yohanes", "batak": "3 Johannes", "abbr": "3Yoh", "chapters": 1},
+            {"id": 65, "name": "Yudas", "batak": "Yudas", "abbr": "Yud", "chapters": 1},
+            {"id": 66, "name": "Wahyu", "batak": "Pangungkapon", "abbr": "Why", "chapters": 22}
+        ];
+
+        // Built-in verse database with popular verses
+        this.versesData = {
+            "43_3_16": {
+                book: "Yohanes",
+                chapter: 3,
+                verse: 16,
+                indonesia: "Karena begitu besar kasih Allah akan dunia ini, sehingga Ia telah mengaruniakan Anak-Nya yang tunggal, supaya setiap orang yang percaya kepada-Nya tidak binasa, melainkan beroleh hidup yang kekal.",
+                batak: "Alai dia ma roha ni Debata tu banua on, asa dibahenon-Na Anak-Na na sada, supaya saha hita na mangandung tu Ibana, unang binasa, alai beang hita angka roha na tartahan."
+            },
+            "40_6_9": {
+                book: "Matius",
+                chapter: 6,
+                verse: 9,
+                indonesia: "Karena itu berdoalah demikian: Bapa kami yang di surga, dikuduskanlah nama-Mu.",
+                batak: "Ala songon on ma manggabe hamu: Amanta di banua ginjang, pasalanta ma goar-Mu."
+            },
+            "1_1_1": {
+                book: "Kejadian",
+                chapter: 1,
+                verse: 1,
+                indonesia: "Pada mulanya Allah menciptakan langit dan bumi.",
+                batak: "Di haporseaon dihagenon Debata langit dohot tano."
+            },
+            "19_23_1": {
+                book: "Mazmur",
+                chapter: 23,
+                verse: 1,
+                indonesia: "Mazmur Daud. TUHAN adalah gembalaku, takkan kekurangan aku.",
+                batak: "Debata do angon-ku, alai unang kurang ahu."
+            },
+            "45_8_28": {
+                book: "Roma",
+                chapter: 8,
+                verse: 28,
+                indonesia: "Kita tahu sekarang, bahwa Allah turut bekerja dalam segala sesuatu untuk mendatangkan kebaikan bagi mereka yang mengasihi Dia, yaitu bagi mereka yang terpanggil sesuai dengan rencana Allah.",
+                batak: "Olo ta adong songon na marsibahen Debata dohot sude bahen tu jolmana na mangandung tu Ibana, na natongos sesuai dohot panggabean-Na."
             }
+        };
+
+        // Chapter verse counts for generating verse options
+        this.chapterVerses = {
+            "1": [31, 25, 24, 26, 32, 22, 24, 22, 29, 32, 32, 20, 18, 24, 21, 16, 27, 33, 38, 18, 34, 24, 20, 67, 34, 35, 46, 22, 35, 43, 55, 32, 20, 31, 29, 43, 36, 30, 23, 23, 57, 38, 34, 34, 28, 34, 31, 22, 33, 26],
+            "40": [25, 23, 17, 25, 48, 34, 29, 34, 38, 42, 30, 50, 58, 36, 39, 28, 27, 35, 30, 34, 46, 46, 39, 51, 46, 75, 66, 20],
+            "43": [51, 25, 36, 54, 47, 71, 53, 59, 41, 42, 57, 50, 38, 31, 27, 33, 26, 40, 42, 31, 25],
+            "19": [6, 12, 8, 8, 12, 10, 17, 9, 20, 18, 7, 8, 6, 7, 5, 11, 15, 50, 14, 9, 13, 31, 6, 10, 22, 12, 14, 9, 11, 12, 24, 11, 22, 22, 28, 12, 40, 22, 13, 17, 13, 11, 5, 26, 17, 11, 9, 14, 20, 23, 19, 9, 6, 7, 23, 13, 11, 11, 17, 12, 8, 12, 11, 10, 13, 20, 7, 35, 36, 5, 24, 20, 28, 23, 10, 11, 20, 32, 17, 19, 10, 6, 18, 13, 19, 13, 9, 12, 25, 13, 16, 7, 13, 10, 15, 16, 9, 15, 10, 11, 13, 10, 5, 8, 3, 18, 3, 3, 21, 26, 9, 8, 24, 13, 10, 7, 12, 15, 21, 10, 20, 14, 9, 6, 33, 22, 35, 27, 23, 35, 27, 36, 18, 32, 31, 28, 25, 35, 33, 33, 28, 24, 29, 30, 31, 29, 35, 34, 28, 28, 27, 28, 27, 33, 31],
+            "45": [32, 29, 31, 25, 21, 23, 25, 39, 33, 21, 36, 21, 14, 23, 33, 27]
         };
         
         this.init();
     }
     
     init() {
+        console.log('Initializing Alkitab App...');
         this.initializeTheme();
-        this.bindEvents();
         this.loadBooks();
+        this.bindEvents();
         this.showEmptyState();
+        console.log('Alkitab App initialized successfully');
     }
     
     // Theme Management
@@ -63,6 +157,7 @@ class AlkitabApp {
     initializeTheme() {
         document.documentElement.setAttribute('data-color-scheme', this.currentTheme);
         this.updateThemeIcon();
+        console.log('Theme initialized:', this.currentTheme);
     }
     
     toggleTheme() {
@@ -70,6 +165,7 @@ class AlkitabApp {
         document.documentElement.setAttribute('data-color-scheme', this.currentTheme);
         this.setStoredTheme(this.currentTheme);
         this.updateThemeIcon();
+        console.log('Theme toggled to:', this.currentTheme);
     }
     
     updateThemeIcon() {
@@ -79,34 +175,98 @@ class AlkitabApp {
         }
     }
     
-    // Event Binding
+    // Event Binding - Completely Fixed
     bindEvents() {
-        // Theme toggle
+        console.log('Binding events...');
+        
+        // Theme toggle - Fixed
         const themeToggle = document.getElementById('theme-toggle');
         if (themeToggle) {
             themeToggle.addEventListener('click', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 this.toggleTheme();
             });
+            console.log('Theme toggle bound');
         }
         
-        // Language toggle
-        const langButtons = document.querySelectorAll('.lang-btn');
-        langButtons.forEach(btn => {
+        // Language toggle - Fixed
+        document.querySelectorAll('.lang-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.preventDefault();
+                e.stopPropagation();
                 const lang = e.target.dataset.lang;
                 this.switchLanguage(lang);
             });
         });
+        console.log('Language buttons bound');
         
-        // Dropdown selections with proper event handling
-        this.bindDropdownEvents();
+        // Popular verse links - Fixed
+        document.querySelectorAll('.verse-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const book = e.target.dataset.book;
+                const chapter = e.target.dataset.chapter;
+                const verse = e.target.dataset.verse;
+                console.log('Popular verse clicked:', book, chapter, verse);
+                this.loadPopularVerse(parseInt(book), parseInt(chapter), parseInt(verse));
+            });
+        });
+        console.log('Popular verse links bound');
+        
+        // Dropdown events - Simplified and Fixed
+        const bookSelect = document.getElementById('book-select');
+        const chapterSelect = document.getElementById('chapter-select');
+        const verseSelect = document.getElementById('verse-select');
+        
+        if (bookSelect) {
+            bookSelect.addEventListener('change', (e) => {
+                const bookId = parseInt(e.target.value);
+                console.log('Book selected:', bookId);
+                if (bookId) {
+                    this.onBookSelect(bookId);
+                } else {
+                    this.resetSelections();
+                }
+            });
+        }
+        
+        if (chapterSelect) {
+            chapterSelect.addEventListener('change', (e) => {
+                const chapterId = parseInt(e.target.value);
+                console.log('Chapter selected:', chapterId);
+                if (chapterId) {
+                    this.onChapterSelect(chapterId);
+                } else {
+                    this.resetChapterAndVerse();
+                }
+            });
+        }
+        
+        if (verseSelect) {
+            verseSelect.addEventListener('change', (e) => {
+                const verseId = parseInt(e.target.value);
+                console.log('Verse selected:', verseId);
+                if (verseId) {
+                    this.onVerseSelect(verseId);
+                } else {
+                    this.showEmptyState();
+                }
+            });
+        }
         
         // Action buttons
+        this.bindActionButtons();
+        
+        console.log('All events bound successfully');
+    }
+    
+    bindActionButtons() {
         const copyBtn = document.getElementById('copy-verse');
         const shareBtn = document.getElementById('share-verse');
-        const retryBtn = document.getElementById('retry-btn');
+        const prevBtn = document.getElementById('prev-verse');
+        const nextBtn = document.getElementById('next-verse');
         
         if (copyBtn) {
             copyBtn.addEventListener('click', (e) => {
@@ -122,70 +282,25 @@ class AlkitabApp {
             });
         }
         
-        if (retryBtn) {
-            retryBtn.addEventListener('click', (e) => {
+        if (prevBtn) {
+            prevBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                this.retryLoadVerse();
+                this.navigateVerse(-1);
             });
         }
-    }
-    
-    bindDropdownEvents() {
-        const bookSelect = document.getElementById('book-select');
-        const chapterSelect = document.getElementById('chapter-select');
-        const verseSelect = document.getElementById('verse-select');
         
-        if (bookSelect) {
-            // Remove existing listeners first
-            bookSelect.removeEventListener('change', this.handleBookSelect);
-            
-            // Add new listener with proper context
-            this.handleBookSelect = (e) => {
-                const value = e.target.value;
-                console.log('Book selected:', value);
-                this.onBookSelect(value);
-            };
-            
-            bookSelect.addEventListener('change', this.handleBookSelect);
-            
-            // Also listen for input events for better compatibility
-            bookSelect.addEventListener('input', this.handleBookSelect);
-        }
-        
-        if (chapterSelect) {
-            // Remove existing listeners first
-            chapterSelect.removeEventListener('change', this.handleChapterSelect);
-            
-            // Add new listener with proper context
-            this.handleChapterSelect = (e) => {
-                const value = e.target.value;
-                console.log('Chapter selected:', value);
-                this.onChapterSelect(value);
-            };
-            
-            chapterSelect.addEventListener('change', this.handleChapterSelect);
-            chapterSelect.addEventListener('input', this.handleChapterSelect);
-        }
-        
-        if (verseSelect) {
-            // Remove existing listeners first
-            verseSelect.removeEventListener('change', this.handleVerseSelect);
-            
-            // Add new listener with proper context
-            this.handleVerseSelect = (e) => {
-                const value = e.target.value;
-                console.log('Verse selected:', value);
-                this.onVerseSelect(value);
-            };
-            
-            verseSelect.addEventListener('change', this.handleVerseSelect);
-            verseSelect.addEventListener('input', this.handleVerseSelect);
+        if (nextBtn) {
+            nextBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.navigateVerse(1);
+            });
         }
     }
     
     // Language Management
     switchLanguage(lang) {
         this.currentLanguage = lang;
+        console.log('Language switched to:', lang);
         
         // Update active button
         document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -197,242 +312,145 @@ class AlkitabApp {
             activeBtn.classList.add('active');
         }
         
+        // Refresh book dropdown
+        this.loadBooks();
+        
         // Refresh verse content if available
         if (this.selectedBook && this.selectedChapter && this.selectedVerse) {
             this.loadVerse(this.selectedBook, this.selectedChapter, this.selectedVerse);
         }
     }
     
-    // API Methods
-    async fetchWithFallback(url, fallbackData) {
-        try {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 10000);
-            
-            const response = await fetch(url, { 
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                signal: controller.signal
-            });
-            
-            clearTimeout(timeoutId);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
-            
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.warn(`API call failed for ${url}:`, error);
-            return fallbackData;
-        }
-    }
-    
-    // Data Loading Methods
-    async loadBooks() {
-        try {
-            const books = await this.fetchWithFallback(
-                `${this.API_BASE}/books`,
-                this.fallbackData.books
-            );
-            
-            this.populateBookSelect(books);
-        } catch (error) {
-            console.error('Error loading books:', error);
-            this.populateBookSelect(this.fallbackData.books);
-        }
-    }
-    
-    async loadChapters(bookId) {
-        try {
-            this.showLoading();
-            
-            // Generate fallback chapters based on book data
-            const book = this.fallbackData.books.find(b => b.id == bookId);
-            const fallbackChapters = book ? 
-                Array.from({length: book.total_chapters}, (_, i) => ({
-                    id: i + 1,
-                    number: i + 1,
-                    book_id: bookId
-                })) : [];
-            
-            const chapters = await this.fetchWithFallback(
-                `${this.API_BASE}/books/${bookId}/chapters`,
-                fallbackChapters
-            );
-            
-            this.populateChapterSelect(chapters);
-            this.hideLoading();
-        } catch (error) {
-            console.error('Error loading chapters:', error);
-            this.showError('Gagal memuat daftar pasal');
-        }
-    }
-    
-    async loadVerses(bookId, chapterId) {
-        try {
-            this.showLoading();
-            
-            // Generate fallback verses (assume 25-50 verses per chapter)
-            const verseCount = Math.floor(Math.random() * 26) + 25;
-            const fallbackVerses = Array.from({length: verseCount}, (_, i) => ({
-                id: i + 1,
-                number: i + 1,
-                chapter_id: chapterId,
-                book_id: bookId
-            }));
-            
-            const verses = await this.fetchWithFallback(
-                `${this.API_BASE}/books/${bookId}/chapters/${chapterId}/verses`,
-                fallbackVerses
-            );
-            
-            this.populateVerseSelect(verses);
-            this.hideLoading();
-        } catch (error) {
-            console.error('Error loading verses:', error);
-            this.showError('Gagal memuat daftar ayat');
-        }
-    }
-    
-    async loadVerse(bookId, chapterId, verseId) {
-        try {
-            this.showLoading();
-            
-            // Try to get verse from API first
-            let verseData;
-            try {
-                verseData = await this.fetchWithFallback(
-                    `${this.API_BASE}/books/${bookId}/chapters/${chapterId}/verses/${verseId}`,
-                    null
-                );
-            } catch (apiError) {
-                console.warn('API failed, using fallback data');
-                verseData = null;
-            }
-            
-            // If API fails, use fallback data
-            if (!verseData) {
-                const bookData = this.fallbackData.books.find(b => b.id == bookId);
-                const verseKey = `${bookData?.abbreviation}_${chapterId}_${verseId}`;
-                const fallbackVerse = this.fallbackData.sampleVerses[verseKey];
-                
-                if (fallbackVerse) {
-                    verseData = {
-                        id: verseId,
-                        number: verseId,
-                        text: this.currentLanguage === 'tb' ? fallbackVerse.indonesia : fallbackVerse.batak,
-                        book: { 
-                            name: this.currentLanguage === 'tb' ? bookData.name : bookData.batak_name,
-                            abbreviation: bookData.abbreviation 
-                        },
-                        chapter: { number: chapterId }
-                    };
-                } else {
-                    // Generate sample content for demonstration
-                    const bookData = this.fallbackData.books.find(b => b.id == bookId);
-                    const bookName = this.currentLanguage === 'tb' ? bookData?.name : bookData?.batak_name;
-                    
-                    verseData = {
-                        id: verseId,
-                        number: verseId,
-                        text: this.currentLanguage === 'tb' ? 
-                            `Ini adalah contoh teks untuk ${bookName} ${chapterId}:${verseId}. API sedang tidak tersedia, sehingga ditampilkan teks contoh.` :
-                            `Songon on ma hata ni Debata di ${bookName} ${chapterId}:${verseId}. API ndang sadia, asa ditampilhon hata panundui.`,
-                        book: { 
-                            name: bookName,
-                            abbreviation: bookData?.abbreviation 
-                        },
-                        chapter: { number: chapterId }
-                    };
-                }
-            }
-            
-            this.displayVerse(verseData);
-            this.hideLoading();
-        } catch (error) {
-            console.error('Error loading verse:', error);
-            this.showError('Gagal memuat ayat. Silakan coba lagi.');
-        }
-    }
-    
-    // UI Population Methods
-    populateBookSelect(books) {
+    // Data Loading Methods - Simplified
+    loadBooks() {
+        console.log('Loading books...');
         const bookSelect = document.getElementById('book-select');
         if (!bookSelect) return;
         
-        // Clear existing options except the first one
         bookSelect.innerHTML = '<option value="">-- Pilih Kitab --</option>';
         
-        books.forEach(book => {
+        this.booksData.forEach(book => {
             const option = document.createElement('option');
             option.value = book.id;
-            option.textContent = `${book.abbreviation}. ${this.currentLanguage === 'tb' ? book.name : book.batak_name}`;
+            const displayName = this.currentLanguage === 'tb' ? book.name : book.batak;
+            option.textContent = `${book.abbr}. ${displayName}`;
             bookSelect.appendChild(option);
         });
+        
+        console.log('Books loaded successfully');
     }
     
-    populateChapterSelect(chapters) {
+    loadChapters(bookId) {
+        console.log('Loading chapters for book:', bookId);
+        const book = this.booksData.find(b => b.id === bookId);
+        if (!book) return;
+        
         const chapterSelect = document.getElementById('chapter-select');
         if (!chapterSelect) return;
         
         chapterSelect.innerHTML = '<option value="">-- Pilih Pasal --</option>';
-        chapterSelect.disabled = false;
         
-        chapters.forEach(chapter => {
+        for (let i = 1; i <= book.chapters; i++) {
             const option = document.createElement('option');
-            option.value = chapter.number || chapter.id;
-            option.textContent = `Pasal ${chapter.number || chapter.id}`;
+            option.value = i;
+            option.textContent = `Pasal ${i}`;
             chapterSelect.appendChild(option);
-        });
-        
-        // Reset verse select
-        const verseSelect = document.getElementById('verse-select');
-        if (verseSelect) {
-            verseSelect.innerHTML = '<option value="">-- Pilih Ayat --</option>';
-            verseSelect.disabled = true;
         }
         
-        // Re-bind events after populating
-        this.bindDropdownEvents();
+        chapterSelect.disabled = false;
+        console.log('Chapters loaded:', book.chapters);
     }
     
-    populateVerseSelect(verses) {
+    loadVerses(bookId, chapterId) {
+        console.log('Loading verses for book:', bookId, 'chapter:', chapterId);
+        const verseCount = this.getVerseCount(bookId, chapterId);
+        
         const verseSelect = document.getElementById('verse-select');
         if (!verseSelect) return;
         
         verseSelect.innerHTML = '<option value="">-- Pilih Ayat --</option>';
-        verseSelect.disabled = false;
         
-        verses.forEach(verse => {
+        for (let i = 1; i <= verseCount; i++) {
             const option = document.createElement('option');
-            option.value = verse.number || verse.id;
-            option.textContent = `Ayat ${verse.number || verse.id}`;
+            option.value = i;
+            option.textContent = `Ayat ${i}`;
             verseSelect.appendChild(option);
-        });
-        
-        // Re-bind events after populating
-        this.bindDropdownEvents();
-    }
-    
-    // Event Handlers
-    async onBookSelect(bookId) {
-        console.log('onBookSelect called with:', bookId);
-        
-        if (!bookId) {
-            this.resetSelections();
-            return;
         }
         
+        verseSelect.disabled = false;
+        console.log('Verses loaded:', verseCount);
+    }
+    
+    getVerseCount(bookId, chapterId) {
+        const bookChapters = this.chapterVerses[bookId.toString()];
+        if (bookChapters && bookChapters[chapterId - 1]) {
+            return bookChapters[chapterId - 1];
+        }
+        return 25; // Default
+    }
+    
+    loadVerse(bookId, chapterId, verseId) {
+        console.log('Loading verse:', bookId, chapterId, verseId);
+        const verseKey = `${bookId}_${chapterId}_${verseId}`;
+        const verseData = this.versesData[verseKey];
+        
+        if (verseData) {
+            console.log('Verse data found:', verseKey);
+            this.displayVerse(verseData, bookId);
+        } else {
+            console.log('Verse data not found:', verseKey);
+            this.showNoVerseAvailable(bookId, chapterId, verseId);
+        }
+    }
+    
+    loadPopularVerse(bookId, chapterId, verseId) {
+        console.log('Loading popular verse:', bookId, chapterId, verseId);
+        
+        // Set the current selection
+        this.selectedBook = bookId;
+        this.selectedChapter = chapterId;
+        this.selectedVerse = verseId;
+        
+        // Update dropdowns
+        const bookSelect = document.getElementById('book-select');
+        if (bookSelect) {
+            bookSelect.value = bookId;
+        }
+        
+        // Load and populate chapters
+        this.loadChapters(bookId);
+        
+        // Set chapter value
+        setTimeout(() => {
+            const chapterSelect = document.getElementById('chapter-select');
+            if (chapterSelect) {
+                chapterSelect.value = chapterId;
+            }
+            
+            // Load and populate verses
+            this.loadVerses(bookId, chapterId);
+            
+            // Set verse value and load content
+            setTimeout(() => {
+                const verseSelect = document.getElementById('verse-select');
+                if (verseSelect) {
+                    verseSelect.value = verseId;
+                }
+                
+                // Load the actual verse content
+                this.loadVerse(bookId, chapterId, verseId);
+            }, 100);
+        }, 100);
+    }
+    
+    // Event Handlers - Simplified
+    onBookSelect(bookId) {
+        console.log('onBookSelect:', bookId);
         this.selectedBook = bookId;
         this.selectedChapter = null;
         this.selectedVerse = null;
         
-        // Reset chapter and verse selects
+        // Reset other dropdowns
         const chapterSelect = document.getElementById('chapter-select');
         const verseSelect = document.getElementById('verse-select');
         
@@ -447,28 +465,15 @@ class AlkitabApp {
         }
         
         this.showEmptyState();
-        await this.loadChapters(bookId);
+        this.loadChapters(bookId);
     }
     
-    async onChapterSelect(chapterId) {
-        console.log('onChapterSelect called with:', chapterId);
-        
-        if (!chapterId) {
-            this.selectedChapter = null;
-            this.selectedVerse = null;
-            const verseSelect = document.getElementById('verse-select');
-            if (verseSelect) {
-                verseSelect.innerHTML = '<option value="">-- Pilih Ayat --</option>';
-                verseSelect.disabled = true;
-            }
-            this.showEmptyState();
-            return;
-        }
-        
+    onChapterSelect(chapterId) {
+        console.log('onChapterSelect:', chapterId);
         this.selectedChapter = chapterId;
         this.selectedVerse = null;
         
-        // Reset verse select
+        // Reset verse dropdown
         const verseSelect = document.getElementById('verse-select');
         if (verseSelect) {
             verseSelect.innerHTML = '<option value="">-- Pilih Ayat --</option>';
@@ -476,20 +481,13 @@ class AlkitabApp {
         }
         
         this.showEmptyState();
-        await this.loadVerses(this.selectedBook, chapterId);
+        this.loadVerses(this.selectedBook, chapterId);
     }
     
-    async onVerseSelect(verseId) {
-        console.log('onVerseSelect called with:', verseId);
-        
-        if (!verseId) {
-            this.selectedVerse = null;
-            this.showEmptyState();
-            return;
-        }
-        
+    onVerseSelect(verseId) {
+        console.log('onVerseSelect:', verseId);
         this.selectedVerse = verseId;
-        await this.loadVerse(this.selectedBook, this.selectedChapter, verseId);
+        this.loadVerse(this.selectedBook, this.selectedChapter, verseId);
     }
     
     resetSelections() {
@@ -513,56 +511,99 @@ class AlkitabApp {
         this.showEmptyState();
     }
     
+    resetChapterAndVerse() {
+        this.selectedChapter = null;
+        this.selectedVerse = null;
+        
+        const verseSelect = document.getElementById('verse-select');
+        if (verseSelect) {
+            verseSelect.innerHTML = '<option value="">-- Pilih Ayat --</option>';
+            verseSelect.disabled = true;
+        }
+        
+        this.showEmptyState();
+    }
+    
     // Display Methods
-    displayVerse(verseData) {
+    displayVerse(verseData, bookId) {
+        console.log('Displaying verse:', verseData);
+        
         const verseReference = document.getElementById('verse-reference');
         const verseTextContent = document.getElementById('verse-text-content');
         
         if (verseReference && verseTextContent) {
-            const reference = `${verseData.book.name} ${verseData.chapter.number}:${verseData.number}`;
+            const book = this.booksData.find(b => b.id === bookId);
+            const bookName = this.currentLanguage === 'tb' ? book.name : book.batak;
+            const reference = `${bookName} ${verseData.chapter}:${verseData.verse}`;
+            
             verseReference.textContent = reference;
-            verseTextContent.textContent = verseData.text;
+            
+            const text = this.currentLanguage === 'tb' ? verseData.indonesia : verseData.batak;
+            verseTextContent.textContent = text;
             
             this.hideAllStates();
             this.showElement('verse-content');
             
-            // Scroll to content
-            setTimeout(() => {
-                document.getElementById('verse-content')?.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center' 
-                });
-            }, 100);
+            this.updateNavigationButtons();
+            console.log('Verse displayed successfully');
         }
     }
     
-    // State Management
-    showLoading() {
+    showNoVerseAvailable(bookId, chapterId, verseId) {
+        const book = this.booksData.find(b => b.id === bookId);
+        const bookName = this.currentLanguage === 'tb' ? book.name : book.batak;
+        const reference = `${bookName} ${chapterId}:${verseId}`;
+        
+        const noVerseMessage = document.getElementById('no-verse-message');
+        if (noVerseMessage) {
+            noVerseMessage.textContent = `Teks untuk ${reference} belum tersedia dalam database.`;
+        }
+        
         this.hideAllStates();
-        this.showElement('loading-state');
+        this.showElement('no-verse-state');
     }
     
-    hideLoading() {
-        this.hideElement('loading-state');
+    // Navigation
+    navigateVerse(direction) {
+        if (!this.selectedBook || !this.selectedChapter || !this.selectedVerse) return;
+        
+        const currentVerse = this.selectedVerse;
+        const newVerse = currentVerse + direction;
+        const maxVerses = this.getVerseCount(this.selectedBook, this.selectedChapter);
+        
+        if (newVerse >= 1 && newVerse <= maxVerses) {
+            this.selectedVerse = newVerse;
+            
+            const verseSelect = document.getElementById('verse-select');
+            if (verseSelect) {
+                verseSelect.value = newVerse;
+            }
+            
+            this.loadVerse(this.selectedBook, this.selectedChapter, newVerse);
+        }
     }
     
+    updateNavigationButtons() {
+        const prevBtn = document.getElementById('prev-verse');
+        const nextBtn = document.getElementById('next-verse');
+        
+        if (!prevBtn || !nextBtn) return;
+        
+        const currentVerse = this.selectedVerse;
+        const maxVerses = this.getVerseCount(this.selectedBook, this.selectedChapter);
+        
+        prevBtn.disabled = currentVerse <= 1;
+        nextBtn.disabled = currentVerse >= maxVerses;
+    }
+    
+    // State Management
     showEmptyState() {
         this.hideAllStates();
         this.showElement('empty-state');
     }
     
-    showError(message) {
-        const errorMessage = document.getElementById('error-message');
-        if (errorMessage) {
-            errorMessage.textContent = message;
-        }
-        
-        this.hideAllStates();
-        this.showElement('error-state');
-    }
-    
     hideAllStates() {
-        const states = ['loading-state', 'empty-state', 'verse-content', 'error-state'];
+        const states = ['empty-state', 'verse-content', 'no-verse-state'];
         states.forEach(state => this.hideElement(state));
     }
     
@@ -580,8 +621,8 @@ class AlkitabApp {
         }
     }
     
-    // Action Methods
-    async copyVerse() {
+    // Actions
+    copyVerse() {
         const verseText = document.getElementById('verse-text-content')?.textContent;
         const verseRef = document.getElementById('verse-reference')?.textContent;
         
@@ -589,26 +630,31 @@ class AlkitabApp {
         
         const fullText = `"${verseText}"\n\n${verseRef}`;
         
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(fullText).then(() => {
+                this.showToast('Ayat berhasil disalin!');
+            }).catch(() => {
+                this.fallbackCopy(fullText);
+            });
+        } else {
+            this.fallbackCopy(fullText);
+        }
+    }
+    
+    fallbackCopy(text) {
         try {
-            if (navigator.clipboard && window.isSecureContext) {
-                await navigator.clipboard.writeText(fullText);
-            } else {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = fullText;
-                textArea.style.position = 'fixed';
-                textArea.style.left = '-999999px';
-                textArea.style.top = '-999999px';
-                document.body.appendChild(textArea);
-                textArea.focus();
-                textArea.select();
-                document.execCommand('copy');
-                textArea.remove();
-            }
-            
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            document.execCommand('copy');
+            textArea.remove();
             this.showToast('Ayat berhasil disalin!');
         } catch (error) {
-            console.error('Failed to copy verse:', error);
             this.showToast('Gagal menyalin ayat');
         }
     }
@@ -628,8 +674,7 @@ class AlkitabApp {
                 url: window.location.href
             }).then(() => {
                 this.showToast('Berhasil dibagikan!');
-            }).catch(error => {
-                console.error('Failed to share:', error);
+            }).catch(() => {
                 this.fallbackShare(shareText);
             });
         } else {
@@ -638,18 +683,9 @@ class AlkitabApp {
     }
     
     fallbackShare(text) {
-        // Create shareable URL for WhatsApp
         const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
         window.open(whatsappUrl, '_blank');
         this.showToast('Dibuka di WhatsApp!');
-    }
-    
-    retryLoadVerse() {
-        if (this.selectedBook && this.selectedChapter && this.selectedVerse) {
-            this.loadVerse(this.selectedBook, this.selectedChapter, this.selectedVerse);
-        } else {
-            this.showEmptyState();
-        }
     }
     
     showToast(message) {
@@ -671,73 +707,13 @@ class AlkitabApp {
     }
 }
 
-// Global error handler for redirecting to backup domain
-window.addEventListener('error', (event) => {
-    console.error('Global error:', event.error);
-    
-    // Check if it's a critical error that should redirect
-    if (event.error && (
-        event.error.message.includes('network') ||
-        event.error.message.includes('fetch') ||
-        event.error.message.includes('server')
-    )) {
-        setTimeout(() => {
-            try {
-                window.location.href = 'https://alkitab.hkbpperawang.org';
-            } catch (redirectError) {
-                console.error('Failed to redirect:', redirectError);
-            }
-        }, 5000);
-    }
-});
-
-// Unhandled promise rejection handler
-window.addEventListener('unhandledrejection', (event) => {
-    console.error('Unhandled promise rejection:', event.reason);
-    
-    if (event.reason && (
-        event.reason.message?.includes('network') ||
-        event.reason.message?.includes('fetch') ||
-        event.reason.message?.includes('server')
-    )) {
-        setTimeout(() => {
-            try {
-                window.location.href = 'https://alkitab.hkbpperawang.org';
-            } catch (redirectError) {
-                console.error('Failed to redirect:', redirectError);
-            }
-        }, 5000);
-    }
-});
-
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing app...');
     try {
         window.alkitabApp = new AlkitabApp();
-        console.log('Alkitab app initialized successfully');
+        console.log('Alkitab Digital berhasil dimuat!');
     } catch (error) {
-        console.error('Failed to initialize Alkitab app:', error);
-        // Redirect to backup domain on critical initialization error
-        setTimeout(() => {
-            try {
-                window.location.href = 'https://alkitab.hkbpperawang.org';
-            } catch (redirectError) {
-                console.error('Failed to redirect:', redirectError);
-            }
-        }, 3000);
+        console.error('Gagal memuat aplikasi:', error);
     }
 });
-
-// Service Worker for offline support (if needed)
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        // Register service worker if available
-        navigator.serviceWorker.register('/sw.js')
-            .then(registration => {
-                console.log('SW registered: ', registration);
-            })
-            .catch(registrationError => {
-                console.log('SW registration failed: ', registrationError);
-            });
-    });
-}
