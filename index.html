@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alkitab Digital - Terjemahan Baru & Bahasa Batak Toba</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo-section">
+                        <h1 class="app-title">Alkitab Digital</h1>
+                        <p class="app-subtitle">Terjemahan Baru & Bahasa Batak Toba</p>
+                    </div>
+                    <button id="theme-toggle" class="theme-toggle btn btn--outline" aria-label="Toggle tema">
+                        <span class="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="container">
+                <!-- Navigation Dropdowns -->
+                <section class="navigation-section">
+                    <div class="dropdown-container">
+                        <div class="form-group">
+                            <label for="book-select" class="form-label">Pilih Kitab</label>
+                            <select id="book-select" class="form-control">
+                                <option value="">-- Pilih Kitab --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="chapter-select" class="form-label">Pilih Pasal</label>
+                            <select id="chapter-select" class="form-control" disabled>
+                                <option value="">-- Pilih Pasal --</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="verse-select" class="form-label">Pilih Ayat</label>
+                            <select id="verse-select" class="form-control" disabled>
+                                <option value="">-- Pilih Ayat --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Language Toggle -->
+                    <div class="language-toggle-section">
+                        <div class="language-toggle">
+                            <button id="lang-tb" class="lang-btn active" data-lang="tb">Terjemahan Baru</button>
+                            <button id="lang-batak" class="lang-btn" data-lang="batak">Bahasa Batak Toba</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Content Area -->
+                <section class="content-section">
+                    <div class="content-card card">
+                        <div class="card__body">
+                            <!-- Loading State -->
+                            <div id="loading-state" class="loading-state hidden">
+                                <div class="loading-spinner"></div>
+                                <p>Memuat ayat...</p>
+                            </div>
+
+                            <!-- Empty State -->
+                            <div id="empty-state" class="empty-state">
+                                <div class="empty-icon">📖</div>
+                                <h3>Selamat Datang di Alkitab Digital</h3>
+                                <p>Silakan pilih kitab, pasal, dan ayat untuk mulai membaca</p>
+                            </div>
+
+                            <!-- Verse Content -->
+                            <div id="verse-content" class="verse-content hidden">
+                                <div class="verse-header">
+                                    <h2 id="verse-reference" class="verse-reference"></h2>
+                                    <div class="verse-actions">
+                                        <button id="copy-verse" class="btn btn--secondary btn--sm" title="Salin ayat">
+                                            📋 Salin
+                                        </button>
+                                        <button id="share-verse" class="btn btn--secondary btn--sm" title="Bagikan ayat">
+                                            📤 Bagikan
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="verse-text">
+                                    <p id="verse-text-content"></p>
+                                </div>
+                            </div>
+
+                            <!-- Error State -->
+                            <div id="error-state" class="error-state hidden">
+                                <div class="error-icon">⚠️</div>
+                                <h3>Terjadi Kesalahan</h3>
+                                <p id="error-message">Gagal memuat ayat. Silakan coba lagi.</p>
+                                <button id="retry-btn" class="btn btn--primary">Coba Lagi</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <p>&copy; 2024 Alkitab Digital. Dibuat untuk kemudahan membaca Firman Tuhan.</p>
+                    <p class="api-credit">API: <a href="https://github.com/indrapalijama/alkitab-api-v3" target="_blank">alkitab-api-v3</a></p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast hidden">
+            <span id="toast-message"></span>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
