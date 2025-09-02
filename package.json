@@ -6,13 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "export": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "db:push": "prisma db push",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate dev",
-    "db:reset": "prisma migrate reset"
+    "lint": "next lint"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
